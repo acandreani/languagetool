@@ -85,7 +85,7 @@ class Main {
     bitextMode = false;
     srcLt = null;
     bRules = null;
-    lt = new MultiThreadedJLanguageTool(language, motherTongue);
+    lt = new JLanguageTool(language, motherTongue);
     if (languageModelIndexDir != null) {
       lt.activateLanguageModelRules(languageModelIndexDir);
     }
