@@ -96,18 +96,13 @@ public class Unifier {
     tokSequenceEquivalences = new ArrayList<>();
   }
 
-  /**
-   * Tests if a token has shared features with other tokens.
-   * 
-   * @param aToken token to be tested
-   * @param uFeatures features to be tested
-   * @return true if the token shares this type of feature with other tokens
-   */
+  static int isSatisfiedCount = 0;
   protected final boolean isSatisfied(final AnalyzedToken aToken,
       final Map<String, List<String>> uFeatures) {
 
+    System.out.println((isSatisfiedCount++) + ". =============== isSatisfied ===============");
     if (allFeatsIn && equivalencesMatched.isEmpty()) {
-      //System.out.println(aToken + " -> false 1");
+      System.out.println(aToken + " -> false 1");
       return false;
     }
     if (uFeatures == null) {
@@ -124,24 +119,30 @@ public class Unifier {
       }
       for (final Map.Entry<String, List<String>> feat : uFeatures.entrySet()) {
         List<String> types = feat.getValue();
+        System.out.println("types: " + types);
         if (types == null || types.isEmpty()) {
           types = equivalenceFeatures.get(feat.getKey());
         }
+        System.out.println("types: " + types);
         for (final String typeName : types) {
-          final Element testElem = equivalenceTypes
-              .get(new EquivalenceTypeLocator(feat.getKey(), typeName));
+          final Element testElem = equivalenceTypes.get(new EquivalenceTypeLocator(feat.getKey(), typeName));
           if (testElem == null) {
-            //System.out.println(aToken + " -> false 2");
+            System.out.println(aToken + " -> false 2");
             return false;
           }
           if (testElem.isMatched(aToken)) {
+            System.out.println("testElem.isMatched(aToken): true " + aToken + " for " + testElem);
             if (!equivalencesMatched.get(tokCnt).containsKey(feat.getKey())) {
               final List<String> typeSet = new ArrayList<>();
               typeSet.add(typeName);
               equivalencesMatched.get(tokCnt).put(feat.getKey(), typeSet);
+              System.out.println("EQ-PUT: " + typeSet);
             } else {
               equivalencesMatched.get(tokCnt).get(feat.getKey()).add(typeName);
+              System.out.println("EQ-ADD: " + typeName);
             }
+          } else {
+            System.out.println("testElem.isMatched(aToken): false " + aToken + " for " + testElem);
           }
         }
         unified = equivalencesMatched.get(tokCnt).containsKey(feat.getKey());
@@ -155,14 +156,16 @@ public class Unifier {
           List<Map<String, List<String>>> equivList = new ArrayList<>();
           equivList.add(equivalencesMatched.get(tokCnt));
           tokSequenceEquivalences.add(equivList);
+          System.out.println("ADD1: " + equivList);
         } else {
           tokSequence.get(0).addReading(aToken);
           tokSequenceEquivalences.get(0).add(equivalencesMatched.get(tokCnt));
+          System.out.println("ADD2["+tokCnt+"]: " + equivalencesMatched.get(tokCnt));
         }
         tokCnt++;
       }
     }
-    //System.out.println(aToken + " -> " + unified);
+    System.out.println(aToken + " -> " + unified);
     return unified;
   }
 
@@ -216,10 +219,12 @@ public class Unifier {
           List<Map<String, List<String>>> equivList = new ArrayList<>();
           equivList.add(equivalencesMatchedHere);
           tokSequenceEquivalences.add(equivList);
+          System.out.println("ADD3: " + equivList);
         } else {
           if (readingsCounter < tokSequence.size()) {
             tokSequence.get(readingsCounter).addReading(aToken);
             tokSequenceEquivalences.get(readingsCounter).add(equivalencesMatchedHere);
+            System.out.println("ADD4: " + equivalencesMatchedHere);
           } else {
             anyFeatUnified = false;
           }
@@ -246,10 +251,12 @@ public class Unifier {
                 tokSequenceEquivalences.get(j).get(i).get(feat.getKey()).retainAll(equivalencesToBeKept.get(feat.getKey()));
               } else {
                 tokSequenceEquivalences.get(j).get(i).remove(feat.getKey());
+                System.out.println("REM1: " + feat.getKey());
               }
             }
           } else {
             tokSequenceEquivalences.get(j).get(i).remove(feat.getKey());
+            System.out.println("REM2: " + feat.getKey());
           }
         }
       }
@@ -344,7 +351,21 @@ public class Unifier {
   public final AnalyzedTokenReadings[] getUnifiedTokens() {
     System.out.println("===================================================");
     System.out.println(tokSequence);
-    System.out.println(tokSequenceEquivalences);
+    //System.out.println(tokSequenceEquivalences);
+    List<List<Map<String, List<String>>>> tokSequenceEquivalencesSorted = tokSequenceEquivalences;
+    for (List<Map<String,List<String>>> tokSequenceEquivalence : tokSequenceEquivalences) {
+      //System.out.println("> " + tokSequenceEquivalence);
+      System.out.println("> =====");
+      for (Map<String, List<String>> stringListMap : tokSequenceEquivalence) {
+        //System.out.println("> " + stringListMap);
+        System.out.println("> -----");
+        List<String> strings = new ArrayList<>(stringListMap.keySet());
+        Collections.sort(strings);
+        for (String s : strings) {
+          System.out.println("> " + s + " -> " + stringListMap.get(s));
+        }
+      }
+    }
     Set<Map.Entry<String, List<String>>> x = unificationFeats.entrySet();
     List<Map.Entry<String, List<String>>> sorted = new ArrayList<>();
     for (Map.Entry<String, List<String>> entry : x) {
@@ -468,6 +489,7 @@ public class Unifier {
       tokEquivs.add(dummy);
     }
     tokSequenceEquivalences.add(tokEquivs);
+    System.out.println("ADDn: "+ tokEquivs);
     readingsCounter++;
   }
 

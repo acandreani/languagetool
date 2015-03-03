@@ -18,11 +18,7 @@
  */
 package org.languagetool.rules.patterns;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.jetbrains.annotations.Nullable;
@@ -209,7 +205,7 @@ public class XMLRuleHandler extends DefaultHandler {
 
   public XMLRuleHandler() {
     elementList = new ArrayList<>();
-    equivalenceFeatures = new HashMap<>();
+    equivalenceFeatures = new LinkedHashMap<>();
     uTypeList = new ArrayList<>();
   }
 

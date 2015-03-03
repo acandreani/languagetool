@@ -20,6 +20,7 @@
 package org.languagetool.rules.patterns;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,8 +45,8 @@ public class UnifierConfiguration {
 
   public UnifierConfiguration() {
     // workaround for issue #13
-    equivalenceTypes = new ConcurrentHashMap<>();
-    equivalenceFeatures = new ConcurrentHashMap<>();
+    equivalenceTypes = new LinkedHashMap<>();
+    equivalenceFeatures = new LinkedHashMap<>();
   }
 
   /**
@@ -78,11 +79,11 @@ public class UnifierConfiguration {
   }
 
   public Map<EquivalenceTypeLocator, Element> getEquivalenceTypes() {
-    return Collections.unmodifiableMap(equivalenceTypes);
+    return equivalenceTypes;
   }
 
   public Map<String, List<String>> getEquivalenceFeatures() {
-    return Collections.unmodifiableMap(equivalenceFeatures);
+    return equivalenceFeatures;
   }
 
   public Unifier createUnifier() {
