@@ -112,6 +112,7 @@ public class Unifier {
       final Map<String, List<String>> uFeatures) {
 
     if (allFeatsIn && equivalencesMatched.isEmpty()) {
+      //System.out.println(aToken + " -> false 1");
       return false;
     }
     if (uFeatures == null) {
@@ -135,6 +136,7 @@ public class Unifier {
           final Element testElem = equivalenceTypes
               .get(new EquivalenceTypeLocator(feat.getKey(), typeName));
           if (testElem == null) {
+            //System.out.println(aToken + " -> false 2");
             return false;
           }
           if (testElem.isMatched(aToken)) {
@@ -165,6 +167,7 @@ public class Unifier {
         tokCnt++;
       }
     }
+    //System.out.println(aToken + " -> " + unified);
     return unified;
   }
 
@@ -278,6 +281,7 @@ public class Unifier {
    * @since 2.5
    */
   public final boolean getFinalUnificationValue(final Map<String, List<String>> uFeatures) {
+    //System.out.println(uFeatures);
     int tokUnified = 0;
     for (int j = 0; j < tokSequence.size(); j++) {
       boolean unifiedTokensFound = false; // assume that nothing has been found
@@ -305,12 +309,16 @@ public class Unifier {
           }
         }
         if (tokUnified == tokSequence.size()) {
+          //System.out.println("->true");
           return true;
         }
       }
-      if (!unifiedTokensFound)
+      if (!unifiedTokensFound) {
+        //System.out.println("->false1");
         return false;
+      }
     }
+    //System.out.println("->false2");
     return false;
   }
 
@@ -349,6 +357,7 @@ public class Unifier {
         int featUnified = 0;
         if (tokSequenceEquivalences.get(j).get(i).containsKey(UNIFY_IGNORE)) {
           addTokenToSequence(uTokens, tokSequence.get(j).getAnalyzedToken(i), j);
+          System.out.println("#1 "+ uTokens);
           unifiedTokensFound = true;
         } else {
           for (final Map.Entry<String, List<String>> feat : unificationFeats.entrySet()) {
@@ -360,6 +369,7 @@ public class Unifier {
             }
             if (featUnified == unificationFeats.entrySet().size()) {
               addTokenToSequence(uTokens, tokSequence.get(j).getAnalyzedToken(i), j);
+              System.out.println("#2 "+ uTokens);
               unifiedTokensFound = true;
             }
           }
