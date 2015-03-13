@@ -1,4 +1,4 @@
- Portuguese-BR contributions fork. 
+ Portuguese-BR dev fork. 
 
 
 LanguageTool is an Open Source proofreading software for English, French, German, Polish, Russian,
